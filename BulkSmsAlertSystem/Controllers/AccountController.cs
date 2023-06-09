@@ -27,7 +27,7 @@ namespace BulkSmsAlertSystem.Controllers
             var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Login", "Account");
             }
             else
             {
@@ -50,7 +50,7 @@ namespace BulkSmsAlertSystem.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Login", "Account");
             }
             foreach (var error in result.Errors)
             {

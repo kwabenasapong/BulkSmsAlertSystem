@@ -15,6 +15,6 @@ namespace BulkSmsAlertSystem.Models
         public string Message { get; set; }
 
         [Display(Name = "Date Sent")]
-        public DateTime DateSent { get; set; }
+        public DateTime DateSent { get; set; } = DateTime.Now;
     }
 }
