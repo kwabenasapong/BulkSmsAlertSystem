@@ -1,0 +1,33 @@
+﻿@model IEnumerable<BulkSmsAlertSystem.Models.SmsMessage>
+
+@{
+    ViewData["Title"] = "SMS Messages";
+}
+
+<h1>SMS Messages</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Recipient</th>
+            <th>Message</th>
+            <th>Date Sent</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RecipientNumber</td>
+                <td>@item.Message</td>
+                <td>@item.DateSent.ToShortDateString()</td>
+                <td><a asp-action="History" asp-route-id="@item.Id">Details</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
