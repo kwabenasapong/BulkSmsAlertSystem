@@ -1,4 +1,7 @@
-﻿using BulkSmsAlertSystem.Models;
+﻿using BulkSmsAlertSystem.Data;
+using BulkSmsAlertSystem.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +11,14 @@ namespace BulkSmsAlertSystem.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ApplicationDbContext _context;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context; // This is the database context
+
         }
 
         public IActionResult Login()
@@ -20,20 +26,47 @@ namespace BulkSmsAlertSystem.Controllers
             return View();
         }
 
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string email, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
-            if (result.Succeeded)
+            // Search the database for a user with the given email using the `_userManager` object
+            var user = await _userManager.FindByEmailAsync(email);
+
+            // Verify that a user was found with the given email
+            if (user != null)
             {
-                return RedirectToAction("Create", "Sms");
+                // Use `_context` to retrieve user credentials and attempt to sign in the user with the given password
+                var result = await _signInManager.PasswordSignInAsync(user.UserName = email.Split('@')[0], password, false, false);
+
+                // Redirect to SMS creation page if successful
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Create", "Sms");
+                }
+                else
+                {
+                    // If the login fails, display error message.
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return View();
+                }
             }
             else
             {
+                // If the user is not found, display error message.
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                 return View();
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            // Sign out the user and redirect to the home page
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Register()
@@ -59,24 +92,6 @@ namespace BulkSmsAlertSystem.Controllers
             }
             return View();
         }
-
-        /*[HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(string username, string email, string password)
-        {
-            var user = new User { UserName = username, Email = email };
-            var result = await _userManager.CreateAsync(user, password);
-            if (result.Succeeded)
-            {
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Login", "Account");
-            }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-            return View();
-        }*/
 
     }
 }

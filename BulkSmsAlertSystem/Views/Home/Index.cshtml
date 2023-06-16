@@ -1,4 +1,8 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
     ViewData["Title"] = "Home";
 }
 
@@ -6,7 +10,17 @@
     <h1 class="display-4">Welcome to the Bulk SMS Alert System!</h1>
     <p class="lead">This is a simple web application for sending bulk SMS messages.</p>
     <hr class="my-4">
-    <p>Click the button below to get started.</p>
-    <a class="btn btn-primary btn-lg" href="@Url.Action("Index", "Sms")" role="button">Send an SMS</a>
-</div>
+    <p>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a class="btn btn-primary btn-lg" href="@Url.Action("Index", "Sms")" role="button">Send an SMS</a>
+        }
+        else
+        {
+            @* redirect to login page *@
+            <a class="btn btn-primary btn-lg" href="@Url.Action("Login", "Account")" role="button">Login</a>
 
+            @* <partial name="~/Views/Account/login.cshtml" /> *@
+        }
+    </p>
+</div>

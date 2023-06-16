@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using BulkSmsAlertSystem.Services;
 using BulkSmsAlertSystem.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,27 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+/*builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.Cookie.Name = "BulkSmsAlertSystem.Cookie";
+    });*/
+
+// register a sign-out authentication handler for the scheme "Cookies" 
+// that will redirect the user to the /Home/Index page
+/*builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.Cookie.Name = "BulkSmsAlertSystem.Cookie";
+        options.Events.OnSigningOut = async context =>
+        {
+            await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            context.Response.Redirect("/Home/Index");
+        };
+    });*/
 
 var app = builder.Build();
 

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BulkSmsAlertSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230609174212_InitialCreate")]
+    [Migration("20230610000645_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
