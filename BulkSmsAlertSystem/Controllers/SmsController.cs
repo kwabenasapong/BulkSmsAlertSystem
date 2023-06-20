@@ -34,6 +34,7 @@ namespace BulkSmsAlertSystem.Controllers
             if (ModelState.IsValid)
             {
                 await _smsService.SendSmsAsync(smsMessage.RecipientNumber, smsMessage.Message);
+                smsMessage.Message += TempData["SignOff"];
                 _context.Add(smsMessage);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

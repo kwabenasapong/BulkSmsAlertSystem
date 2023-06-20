@@ -39,6 +39,8 @@ namespace BulkSmsAlertSystem.Controllers
             {
                 // Use `_context` to retrieve user credentials and attempt to sign in the user with the given password
                 var result = await _signInManager.PasswordSignInAsync(user.UserName = email.Split('@')[0], password, false, false);
+                TempData["SignOff"] = "Sent by Koby";
+                TempData.Keep("SignOff");
 
                 // Redirect to SMS creation page if successful
                 if (result.Succeeded)
@@ -66,7 +68,7 @@ namespace BulkSmsAlertSystem.Controllers
         {
             // Sign out the user and redirect to the home page
             await HttpContext.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return View(); /*RedirectToAction("Index", "Home");*/
         }
 
         public IActionResult Register()
